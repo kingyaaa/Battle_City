@@ -1,4 +1,5 @@
 #include "Tank.h"
+
 //#include"Brick.h"
 void Tank::gotoxy(int x, int y)
 {
@@ -71,48 +72,6 @@ void Tank::DrawTankBody()
 	//绘制坦克
 	//矩阵
 
-	for (int i = m_x1 - 2; i <= m_x1 + 2; i += 2) {
-		for (int j = m_y - 1; j <= m_y + 1; ++j) {
-			gotoxy(i, j);
-			//cout << "▇";
-			Map::MoveLocation[i][j] = 1;
-			Map::MoveLocation[i + 1][j] = 1;
-		}
-	}
-	/**
-	if (m_dir == Dir::UP) {
-		gotoxy(m_x1 - 2, m_y - 1);
-		cout << "  ";
-		gotoxy(m_x1 + 2, m_y - 1);
-		cout << "  ";
-		gotoxy(m_x1, m_y + 1);
-		cout << "  ";
-	}
-	if (m_dir == Dir::DOWN) {
-		gotoxy(m_x1 - 2, m_y + 1);
-		cout << "  ";
-		gotoxy(m_x1 + 2, m_y + 1);
-		cout << "  ";
-		gotoxy(m_x1, m_y - 1);
-		cout << "  ";
-	}
-	if (m_dir == Dir::LEFT) {
-		gotoxy(m_x1 - 2, m_y - 1);
-		cout << "  ";
-		gotoxy(m_x1 - 2, m_y + 1);
-		cout << "  ";
-		gotoxy(m_x1 + 2, m_y);
-		cout << "  ";
-	}
-	if (m_dir == Dir::RIGHT) {
-		gotoxy(m_x1 + 2, m_y - 1);
-		cout << "  ";
-		gotoxy(m_x1 + 2, m_y + 1);
-		cout << "  ";
-		gotoxy(m_x1 - 2, m_y);
-		cout << "  ";
-	}
-	*/
 	if (m_dir == Dir::UP || m_dir == Dir::DOWN) {
 		for (int i = m_x1 - 2; i <= m_x1 + 2; i+=2) {
 			gotoxy(i, m_y);
@@ -166,6 +125,18 @@ void Tank::DrawTankBody()
 	//************************************/
 	//cout << endl;
 }
+void MainTank::DrawTankBody()
+{
+	for (int i = m_x1 - 2; i <= m_x1 + 2; i += 2) {
+		for (int j = m_y - 1; j <= m_y + 1; ++j) {
+			gotoxy(i, j);
+			//cout << "▇";
+			Map::MoveLocation[i][j] = 1;
+			Map::MoveLocation[i + 1][j] = 1;
+		}
+	}
+	Tank::DrawTankBody();
+}
 //改变方向
 /*void Tank::setBrickLocation(vector<BrickLocation>&brick)
 {
@@ -173,17 +144,39 @@ void Tank::DrawTankBody()
 	for (pv = brick.begin(); pv != brick.end(); ++pv)
 		MonitorBrick.push_back(*pv);
 }*/
+void EnemyTank::DrawTankBody()
+{
+	for (int i = m_x1 - 2; i <= m_x1 + 2; i += 2) {
+		for (int j = m_y - 1; j <= m_y + 1; ++j) {
+			gotoxy(i, j);
+			//cout << "▇";
+			Map::MoveLocation[i][j] = 2;
+			Map::MoveLocation[i + 1][j] = 2;
+		}
+	}
+	Tank::DrawTankBody();
+}
 void MainTank::Move(int& right,int& down,Dir last_dir)
 {
 	//int flag = 1;
 	ClearTankBody();
-	int tmp_x1 = m_x1, tmp_y = m_y,tmp_head_x,tmp_head_y;
-	char ch1,ch2;
-	ch1 = _getch();
+	int tmp_x1 = m_x1, tmp_y = m_y;
+	char ch2;
+	//ch1 = _getch();
 	ch2 = _getch();
 	switch (ch2) {
-		//向左
-	case 75: {
+	//进入发射子弹的函数部分
+		//TODO
+	case 'j': {
+		if (bullet.getState() == -1 || state == 1) {
+			int x = 0, y = 0;
+			state = 1;
+			Shoot(Bullet::listBullet,x,y);
+		}
+		break;
+	}
+	//向左75
+	case 'a': {
 		m_dir = Dir::LEFT;
 		if (m_dir != last_dir) {
 			return;
@@ -201,8 +194,8 @@ void MainTank::Move(int& right,int& down,Dir last_dir)
 		}
 		break;
 	}
-		   //向右
-	case 77: {
+		   //向右77
+	case 'd': {
 		m_dir = Dir::RIGHT;
 		if (m_dir != last_dir) {
 			return;
@@ -220,8 +213,8 @@ void MainTank::Move(int& right,int& down,Dir last_dir)
 		}
 		break;
 	}
-		   //向上
-	case 72: {
+		   //向上72
+	case 'w': {
 		m_dir = Dir::UP;
 		if (m_dir != last_dir) {
 			return;
@@ -239,8 +232,8 @@ void MainTank::Move(int& right,int& down,Dir last_dir)
 		}
 		break;
 	}
-		   //向下
-	case 80: {
+		   //80向下
+	case 's': {
 		m_dir = Dir::DOWN;
 		if (m_dir != last_dir) {
 			return;
@@ -262,6 +255,41 @@ void MainTank::Move(int& right,int& down,Dir last_dir)
 		break;
 	}
 	//DrawTankBody();
+}
+void Tank::Shoot(vector<Bullet*>& listBullet,int& x,int& y)
+{
+	//把x,y的坐标找到，即枪口
+	state = 0;
+	if (m_dir == Dir::UP) {
+		x = m_x1;
+		y = m_y - 1;
+	}
+	if (m_dir == Dir::DOWN) {
+		x = m_x1;
+		y = m_y + 1;
+	}
+	if (m_dir == Dir::LEFT) {
+		x = m_x1 - 2;
+		y = m_y;
+	}
+	if (m_dir == Dir::RIGHT) {
+		x = m_x1 + 2;
+		y = m_y;
+	}
+}
+void MainTank::Shoot(vector<Bullet*>& listBullet,int& x,int& y)
+{
+	Tank::Shoot(Bullet::listBullet,x,y);
+	//改变构造函数的变量值,0代表是
+	bullet.init(x, y, m_dir, 0);
+	Bullet::listBullet.push_back(&bullet);
+}
+void EnemyTank::Shoot(vector<Bullet*>& listBullet, int& x, int& y)
+{
+	Tank::Shoot(Bullet::listBullet, x, y);
+	//改变构造函数的变量值;
+	bullet.init(x, y, m_dir, 1);
+	Bullet::listBullet.push_back(&bullet);
 }
 void Tank::ClearTankBody()
 {

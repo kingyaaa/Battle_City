@@ -1,36 +1,18 @@
 #pragma once
 #include"Map.h"
-enum Dir { UP, DOWN, LEFT, RIGHT };
-#define random(a,b) (rand() % (b - a + 1)) + a //横坐标： 5 到 76
+#include"Bullet.h"
+//enum Dir { UP, DOWN, LEFT, RIGHT };
+#define random(a,b) (rand() % (b - a + 1)) + a //横坐标： 4 到 76
 #include<ctime>
 #include<Windows.h>
 #include<iostream>
 #include<conio.h>
 using namespace std;
-/*class Point
-{
-public:
-	Point(int x1,int x2,int y)
-	void set_x1(int m_x1) { mLeft_x = m_x1; }
-	void set_x2(int m_x2) { mRight_x = m_x2; }
-	void set_y(int m_y) { mCenter_y = m_y; }
-	int get_x1() const { return mLeft_x; }
-	int get_x2() const { return mRight_x; }
-	int get_y() const { return mCenter_y; }
-private:
-	//对中心是宽字符的处理
-	int mLeft_x;
-	int mRight_x;
-	int mCenter_y;
-};*/
 class Tank
 {
 public:
 	Tank() 
 	{
-		//head_x1 = 0;
-		//head_x2 = 0;
-		//head_y = 0;
 		m_x1 = 0;
 		m_x2 = 0;
 		m_y = 0;
@@ -44,6 +26,7 @@ public:
 	int getVertexThree_y();
 	int getVertexFour_x();
 	int getVertexFour_y();
+	void Shoot(vector<Bullet*>&listBullet,int &x,int &y);
 	virtual void DrawTankBody();
 	virtual void ClearTankBody();
 	//在Move函数改变方向后就无限移动
@@ -55,17 +38,13 @@ public:
 	void gotoxy(int x, int y);
 protected:
 	//可以画出一个矩阵
-	//int UpLeft;
-	//int DownRight;
-	//int head_x1, head_x2, head_y;
 	int m_x1;
 	int m_x2;
 	int m_y;
 	Dir m_dir;
-	//Point point;
-	//敌军坦克的限定自由移动步数
-	int m_step;
-	vector<BrickLocation>MonitorBrick;
+	Bullet bullet;
+	int state;//该状态记录坦克是否发射了子弹
+	//vector<BrickLocation>MonitorBrick;
 };
 class MainTank :public Tank
 {
@@ -78,9 +57,12 @@ public:
 		m_x2 = 31;
 		m_y = 36;
 		m_dir = Dir::UP;
+		state = 1;
 	}
 	~MainTank() {}
 	void Display();
+	void DrawTankBody();
+	void Shoot(vector<Bullet*>& listBullet,int& x,int& y);
 	void Move(int& right, int& down,Dir dir);
 };
 class EnemyTank:public Tank
@@ -98,10 +80,12 @@ public:
 		m_x2 = m_x1 + 1;
 		m_y = 2;
 		m_dir = Dir::DOWN;
-		//limStep = 15;
+		state = 1;
 	}
 	int getCenterX() const { return m_x1; }
 	int getCenterY() const { return m_y; }
+	void DrawTankBody();
+	void Shoot(vector<Bullet*>& listBullet,int& x,int& y);
 	void Move(int& right, int& down,Dir dir);
 	bool WillKnockTank();
 private:
