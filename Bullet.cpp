@@ -10,6 +10,9 @@ void Bullet::init(int x,int y,Dir dir,int state)
 	b_y = y;
 	b_dir = dir;
 	b_state = state;
+	Map::MoveLocation[b_x][b_y] = 3;
+	Map::MoveLocation[b_x + 1][b_y] = 3;
+	flag = 1;
 }
 /*********************************
 子弹根据发射时的方向移动
@@ -19,22 +22,34 @@ void Bullet::Move()
 {
 	//while (1) {
 	gotoxy(b_x, b_y);
-	cout << "  ";
-		if (b_dir == Dir::UP)
-			b_y--;
-		if (b_dir == Dir::DOWN)
-			b_y++;
-		if (b_dir == Dir::LEFT)
-			b_x -= 2;
-		if (b_dir == Dir::RIGHT)
-			b_x += 2;
+	if (flag == 0) {
+		cout << "  ";
+		//原动态坐标属性归0，表示是空地了
+		Map::MoveLocation[b_x][b_y] = 0;
+		Map::MoveLocation[b_x + 1][b_y] = 0;
+	}
+	if (flag == 1) {
+		cout << "▇";
+		flag = 0;
+	}
+	//
+	if (b_dir == Dir::UP)
+		b_y--;
+	if (b_dir == Dir::DOWN)
+		b_y++;
+	if (b_dir == Dir::LEFT)
+		b_x -= 2;
+	if (b_dir == Dir::RIGHT)
+		b_x += 2;
 	//}
 }
 void Bullet::Display()
 {
 	if (!Disappear()) {
 		gotoxy(b_x, b_y);
-		cout << "❤";
+		Map::MoveLocation[b_x][b_y] = 3;
+		Map::MoveLocation[b_x + 1][b_y] = 3;
+		cout << "**";
 		gotoxy(0, 0);
 	}
 }
@@ -45,16 +60,44 @@ void Bullet::Display()
 ******************************************/
 bool Bullet::Disappear()
 {
+	//子弹打到子弹
+	if (Map::MoveLocation[b_x][b_y] == 3)
+	{
+		b_state = -1;
+		return true;
+	}
+	//我方子弹(0)打到敌方坦克(2)
+	if (Map::MoveLocation[b_x][b_y] == 2 && b_state == 0)
+	{
+		b_state = -1;
+		return true;
+		//坦克检测到被子弹打中,调用爆炸和ClearBody函数;
+	}
+	//敌方子弹（1）打到我方坦克(1)
+	if (Map::MoveLocation[b_x][b_y] == 1 && b_state == 1)
+	{
+		b_state = -1;
+		return true;
+		//坦克检测到被子弹打中,调用爆炸和ClearBody函数;
+	}
 	vector<BrickLocation>::iterator pv;
-	for (pv = Map::BrickList.begin(); pv != Map::BrickList.end(); ++pv) {
+	for (pv = Map::BrickList.begin(); pv != Map::BrickList.end();) {
 		//若撞上了不可摧毁的砖瓦
 		if ((*pv).x == b_x && (*pv).y == b_y && (*pv).UnAttacked)
 		{
-			//gotoxy(b_x, b_y);
-			//cout << "▇";
 			b_state = -1;
 			return true;
 		}
+		//砖也要消失,从砖的VECTOR中消除一个元素
+		if ((*pv).x == b_x && (*pv).y == b_y && !(*pv).UnAttacked)
+		{
+			b_state = -1;
+			gotoxy(b_x, b_y);
+			cout << "  ";
+			pv = Map::BrickList.erase(pv);
+			return true;
+		}
+		++pv;
 	}
 	return false;
 }

@@ -51,11 +51,11 @@ void GameStart()
 
 			mainTank.Display();
 		}
-		/*int i = 0;
+		int i = 0;
 		for (list<EnemyTank*>::iterator it = enemyTanks.begin(); it != enemyTanks.end(); ++it)
 		{
 			//每160ms跑一次重型坦克
-			if (times % 8 == 0 && i % 2 == 0) {
+			if (times % 7 == 0 && i % 2 == 0) {
 				(*it)->DrawTankBody();
 				(*it)->Display(right1, down1, changeDir1);
 			}
@@ -64,15 +64,30 @@ void GameStart()
 				(*it)->DrawTankBody();
 				(*it)->Display(right2, down2, changeDir2);
 			}
-			i++;*/
-			//每10ms跑一遍子弹的集合
-		for (vector<Bullet*>::iterator it = Bullet::listBullet.begin(); it != Bullet::listBullet.end(); ++it)
+			i++;
+		}	//每10ms跑一遍子弹的集合
+		//子弹消失，在vector中删除这个元素;
+		for (vector<Bullet*>::iterator it = Bullet::listBullet.begin(); it != Bullet::listBullet.end();)
 		{
 			(*it)->Move();
+			if ((*it)->Disappear())	{
+				//delete* it;
+				it = Bullet::listBullet.erase(it);
+				continue;
+			}
 			(*it)->Display();
+			++it;
 		}
-	//  }
-		Sleep(20);
+	//}
+		/**********************
+		while (pv != cour.myCourse.end()) {
+		if ((*pv).couID == dropIDorName)
+			pv = cour.myCourse.erase(pv);
+		else
+			++pv;
+	}
+		***********************/
+		Sleep(40);
 		times++;
 	}
 }

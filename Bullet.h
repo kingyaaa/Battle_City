@@ -10,6 +10,7 @@ class Bullet
 private:
 	//记录坐标,移动的方向
 	int b_x, b_y;
+	int flag;
 	Dir b_dir;
 	int b_state;//-1表示消失
 public:

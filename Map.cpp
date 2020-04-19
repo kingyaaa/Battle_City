@@ -245,13 +245,13 @@ void Map::DrawBrick()
 	for (int y = 36; y <= 37; y++) {
 		bl.x = 36;
 		bl.y = y;
-		bl.UnAttacked = true;
+		bl.UnAttacked = false;
 		BrickList.push_back(bl);
 		gotoxy(36, y);
 		cout << "¡þ";
 		bl.x = 44;
 		bl.y = y;
-		bl.UnAttacked = true;
+		bl.UnAttacked = false;
 		BrickList.push_back(bl);
 		gotoxy(44, y);
 		cout << "¡þ";
