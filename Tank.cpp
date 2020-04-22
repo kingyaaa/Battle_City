@@ -10,7 +10,7 @@ void Tank::gotoxy(int x, int y)
 }
 int Tank::getVertexOne_x()
 {
-	if (m_dir == Dir::UP|| m_dir == Dir::RIGHT)
+	if (m_dir == Dir::UP || m_dir == Dir::RIGHT)
 		return m_x1 + 2;
 	if (m_dir == Dir::LEFT || m_dir == Dir::DOWN)
 		return m_x1 - 2;
@@ -71,7 +71,7 @@ void Tank::DrawTankBody()
 	//矩阵
 
 	if (m_dir == Dir::UP || m_dir == Dir::DOWN) {
-		for (int i = m_x1 - 2; i <= m_x1 + 2; i+=2) {
+		for (int i = m_x1 - 2; i <= m_x1 + 2; i += 2) {
 			gotoxy(i, m_y);
 			cout << "▇";
 			gotoxy(0, 0);
@@ -135,6 +135,14 @@ void MainTank::DrawTankBody()
 	}
 	Tank::DrawTankBody();
 }
+/******************************************
+坦克消失，原地清空坦克图形
+坦克的动态坐标归0
+*******************************************/
+//void Tank::Disappear()
+//{
+//	ClearTankBody();
+//}
 void Tank::ClearTankBody()
 {
 	for (int i = m_x1 - 2; i <= m_x1 + 2; i += 2) {
@@ -240,7 +248,7 @@ void MainTank::Display()
 	DrawTankBody();
 	//}
 }
-void MainTank::Move(int& right,int& down,Dir last_dir)
+void MainTank::Move(int& right, int& down, Dir last_dir)
 {
 	//int flag = 1;
 	ClearTankBody();
@@ -249,17 +257,17 @@ void MainTank::Move(int& right,int& down,Dir last_dir)
 	//ch1 = _getch();
 	ch2 = _getch();
 	switch (ch2) {
-	//进入发射子弹的函数部分
-		//TODO
+		//进入发射子弹的函数部分
+			//TODO
 	case 'j': {
 		if (bullet.getState() == -1 || state == 1) {
 			int x = 0, y = 0;
 			state = 1;
-			Shoot(Bullet::listBullet,x,y);
+			Shoot(Bullet::listBullet, x, y);
 		}
 		break;
 	}
-	//向左75
+			//向左75
 	case 'a': {
 		m_dir = Dir::LEFT;
 		if (m_dir != last_dir) {
@@ -270,7 +278,7 @@ void MainTank::Move(int& right,int& down,Dir last_dir)
 		m_x1 += right;
 		m_x2 += right;
 		m_y += down;
-		
+
 		if (WillKnockWall()) {
 			m_x1 = tmp_x1;
 			m_y = tmp_y;
@@ -278,7 +286,7 @@ void MainTank::Move(int& right,int& down,Dir last_dir)
 		}
 		break;
 	}
-		   //向右77
+			//向右77
 	case 'd': {
 		m_dir = Dir::RIGHT;
 		if (m_dir != last_dir) {
@@ -297,7 +305,7 @@ void MainTank::Move(int& right,int& down,Dir last_dir)
 		}
 		break;
 	}
-		   //向上72
+			//向上72
 	case 'w': {
 		m_dir = Dir::UP;
 		if (m_dir != last_dir) {
@@ -316,7 +324,7 @@ void MainTank::Move(int& right,int& down,Dir last_dir)
 		}
 		break;
 	}
-		   //80向下
+			//80向下
 	case 's': {
 		m_dir = Dir::DOWN;
 		if (m_dir != last_dir) {
@@ -374,48 +382,49 @@ void EnemyTank::Display(int& right, int& down, int& changeDir)
 	//Move(right, down,m_dir);
 	DrawTankBody();
 	//while (1) {
-		ClearTankBody();
-		tmp1 = m_x1, tmp2 = m_y;
-		//需要得知当前的移动方向
-		//10步一转
-		if (limStep == 0) {
-			//这里要求转方向
-			Move(right, down,m_dir);
-		}
-		if (!changeDir) {
-			m_x1 += right;
-			m_y += down;
-			limStep--;
-		}
-		if (changeDir == 1)
-			changeDir = 0;
-		if (WillKnockWall()) {
-			m_x1 = tmp1;
-			m_y = tmp2;
-			//主战坦克和敌军坦克的不同点在于，主战坦克在可能撞墙时无法移动，手动转移方向，敌军坦克在可能撞墙时需要自动改变方向
-			Move(right, down, m_dir);
-		}
-		DrawTankBody();
+	ClearTankBody();
+	tmp1 = m_x1, tmp2 = m_y;
+	//需要得知当前的移动方向
+	//10步一转
+	if (limStep == 0) {
+		//这里要求转方向
+		Move(right, down, m_dir);
+	}
+	if (!changeDir) {
+		m_x1 += right;
+		m_y += down;
+		limStep--;
+	}
+	if (changeDir == 1)
+		changeDir = 0;
+	if (WillKnockWall()) {
+		m_x1 = tmp1;
+		m_y = tmp2;
+		//主战坦克和敌军坦克的不同点在于，主战坦克在可能撞墙时无法移动，手动转移方向，敌军坦克在可能撞墙时需要自动改变方向
+		Move(right, down, m_dir);
+	}
+	DrawTankBody();
 	//}
-		if (bullet.getState() == -1 || state == 1) {
-			int x = 0, y = 0;
-			state = 1;
-			Shoot(Bullet::listBullet, x, y);
-		}	
+	if (bullet.getState() == -1 || state == 1) {
+		int x = 0, y = 0;
+		state = 1;
+		Shoot(Bullet::listBullet, x, y);
+	}
 }
-void EnemyTank::Move(int& right,int &down,Dir last_dir)
+
+void EnemyTank::Move(int& right, int& down, Dir last_dir)
 {
 	//ClearTankBody();
 	//产生移动方向的随机数
 	srand((int)time(0));
-	cur_dir = random(1,9);
+	cur_dir = random(1, 9);
 	srand((int)time(0));
-	limStep = random(12,15);
+	limStep = random(12, 15);
 	changeDir = 1;
 	switch (cur_dir) {
-	//向左
+		//向左
 	case 1:
-	case 7:{
+	case 7: {
 		m_dir = Dir::LEFT;
 		right = -2;
 		down = 0;
@@ -429,7 +438,7 @@ void EnemyTank::Move(int& right,int &down,Dir last_dir)
 		//right = -1;
 		//down = 0;
 	}
-	//向右
+		  //向右
 	case 2:
 	case 8: {
 		m_dir = Dir::RIGHT;
@@ -440,7 +449,7 @@ void EnemyTank::Move(int& right,int &down,Dir last_dir)
 		//down = 0;
 		//break;
 	}
-	//向上
+		  //向上
 	case 6: {
 		m_dir = Dir::UP;
 		//right = 0;
@@ -456,11 +465,11 @@ void EnemyTank::Move(int& right,int &down,Dir last_dir)
 		//m_y += down;
 		break;
 	}
-	//向下
+		  //向下
 	case 3:
 	case 4:
 	case 5:
-	case 9:{
+	case 9: {
 		m_dir = Dir::DOWN;
 		//right = 0;
 		//down = 1;
@@ -484,4 +493,14 @@ void EnemyTank::Move(int& right,int &down,Dir last_dir)
 	*/
 	default:break;
 	}
+}
+bool EnemyTank::WillKnockBullet()
+{
+	for (int i = m_x1 - 2; i <= m_x1 + 2; i += 2) {
+		for (int j = m_y - 1; j <= m_y + 1; j++) {
+			if (Map::MoveLocation[i][j] == -1)
+				return true;
+		}
+	}
+	return false;
 }

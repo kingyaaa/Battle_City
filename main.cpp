@@ -23,14 +23,14 @@ void GameStart()
 {
 	Map map;
 	map.DrawBrick();
-	list<EnemyTank*>enemyTanks;
+	vector<EnemyTank*>enemyTanks;
 	enemyTanks.clear();
 	//Bullet::listBullet;
 	for (int i = 0; i <= 1; i++) {
 		enemyTanks.push_back(new EnemyTank());
 	}
 	int count = 0;
-	for (list<EnemyTank*>::iterator it = enemyTanks.begin(); it != enemyTanks.end(); ++it)
+	for (vector<EnemyTank*>::iterator it = enemyTanks.begin(); it != enemyTanks.end(); ++it)
 	{
 		if (count % 2 == 0) {
 			(*it)->initLocation(4);
@@ -52,12 +52,18 @@ void GameStart()
 			mainTank.Display();
 		}
 		int i = 0;
-		for (list<EnemyTank*>::iterator it = enemyTanks.begin(); it != enemyTanks.end(); ++it)
+		for (vector<EnemyTank*>::iterator it = enemyTanks.begin(); it != enemyTanks.end();)
 		{
 			//每160ms跑一次重型坦克
 			if (times % 7 == 0 && i % 2 == 0) {
-				(*it)->DrawTankBody();
-				(*it)->Display(right1, down1, changeDir1);
+				//if ((*it)->WillKnockBullet()) {
+				//	(*it)->ClearTankBody();
+					//it = enemyTanks.erase(it);
+				//}
+				//else {
+					(*it)->DrawTankBody();
+					(*it)->Display(right1, down1, changeDir1);
+				//}
 			}
 			//每80ms跑一次装甲车
 			if (times % 4 == 0 && i % 2 == 1) {
@@ -65,12 +71,13 @@ void GameStart()
 				(*it)->Display(right2, down2, changeDir2);
 			}
 			i++;
+			++it;
 		}	//每10ms跑一遍子弹的集合
 		//子弹消失，在vector中删除这个元素;
 		for (vector<Bullet*>::iterator it = Bullet::listBullet.begin(); it != Bullet::listBullet.end();)
 		{
 			(*it)->Move();
-			if ((*it)->Disappear())	{
+			if ((*it)->Disappear()) {
 				//delete* it;
 				it = Bullet::listBullet.erase(it);
 				continue;
@@ -78,16 +85,25 @@ void GameStart()
 			(*it)->Display();
 			++it;
 		}
-	//}
-		/**********************
-		while (pv != cour.myCourse.end()) {
-		if ((*pv).couID == dropIDorName)
-			pv = cour.myCourse.erase(pv);
-		else
-			++pv;
-	}
-		***********************/
-		Sleep(40);
+		for (vector<EnemyTank*>::iterator it = enemyTanks.begin(); it != enemyTanks.end();) {
+			if ((*it)->WillKnockBullet()) {
+				(*it)->ClearTankBody();
+				//delete* it;
+				it = enemyTanks.erase(it);
+				continue;
+			}
+			++it;
+		}
+		//}
+			/**********************
+			while (pv != cour.myCourse.end()) {
+			if ((*pv).couID == dropIDorName)
+				pv = cour.myCourse.erase(pv);
+			else
+				++pv;
+		}
+			***********************/
+		Sleep(20);
 		times++;
 	}
 }

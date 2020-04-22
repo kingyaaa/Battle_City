@@ -11,7 +11,7 @@ using namespace std;
 class Tank
 {
 public:
-	Tank() 
+	Tank()
 	{
 		m_x1 = 0;
 		m_x2 = 0;
@@ -26,13 +26,14 @@ public:
 	int getVertexThree_y();
 	int getVertexFour_x();
 	int getVertexFour_y();
-	void Shoot(vector<Bullet*>&listBullet,int &x,int &y);
+	void Shoot(vector<Bullet*>& listBullet, int& x, int& y);
 	virtual void DrawTankBody();
 	virtual void ClearTankBody();
+	//virtual void Disappear();
 	//在Move函数改变方向后就无限移动
 	//virtual void Display() = 0;
 	//改变方向
-	virtual void Move(int& right, int& down,Dir dir) = 0;
+	virtual void Move(int& right, int& down, Dir dir) = 0;
 	//void setBrickLocation(vector<BrickLocation>&brick);
 	bool WillKnockWall();
 	void gotoxy(int x, int y);
@@ -49,7 +50,7 @@ protected:
 class MainTank :public Tank
 {
 public:
-	MainTank():Tank()
+	MainTank() :Tank()
 	{
 		//▇
 		//设置初始移动点
@@ -62,16 +63,17 @@ public:
 	~MainTank() {}
 	void Display();
 	void DrawTankBody();
-	void Shoot(vector<Bullet*>& listBullet,int& x,int& y);
-	void Move(int& right, int& down,Dir dir);
+	void Shoot(vector<Bullet*>& listBullet, int& x, int& y);
+	void Move(int& right, int& down, Dir dir);
+	//void Disappear();
 };
-class EnemyTank:public Tank
+class EnemyTank :public Tank
 {
 public:
 	EnemyTank() :Tank()
 	{ }
 	~EnemyTank() {}
-	void Display(int& right,int& down,int& changeDir);
+	void Display(int& right, int& down, int& changeDir);
 	void initLocation(int x) {
 		srand((int)time(0));
 		limStep = random(12, 15);
@@ -85,9 +87,11 @@ public:
 	int getCenterX() const { return m_x1; }
 	int getCenterY() const { return m_y; }
 	void DrawTankBody();
-	void Shoot(vector<Bullet*>& listBullet,int& x,int& y);
-	void Move(int& right, int& down,Dir dir);
-	bool WillKnockTank();
+	void Shoot(vector<Bullet*>& listBullet, int& x, int& y);
+	void Move(int& right, int& down, Dir dir);
+	//bool WillKnockTank();
+	bool WillKnockBullet();
+	//void Disappear();
 private:
 	int cur_dir;
 	//限定10步换一个方向
