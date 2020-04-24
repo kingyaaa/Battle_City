@@ -7,7 +7,7 @@ void Map::DrawBrick()
 	//绘制整个地图
 	//边框
 	BrickLocation bl;
-	for (int j = 0; j <= 80; j +=2) {
+	for (int j = 0; j <= 80; j += 2) {
 		bl.x = j;
 		bl.y = 0;
 		bl.UnAttacked = true;
@@ -31,7 +31,7 @@ void Map::DrawBrick()
 		gotoxy(80, j);
 		cout << "▇";
 	}
-	for (int i = 2; i < 80; i+=2) {
+	for (int i = 2; i < 80; i += 2) {
 		bl.x = i;
 		bl.y = 38;
 		bl.UnAttacked = true;

@@ -61,8 +61,8 @@ void GameStart()
 					//it = enemyTanks.erase(it);
 				//}
 				//else {
-					(*it)->DrawTankBody();
-					(*it)->Display(right1, down1, changeDir1);
+				(*it)->DrawTankBody();
+				(*it)->Display(right1, down1, changeDir1);
 				//}
 			}
 			//每80ms跑一次装甲车

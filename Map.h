@@ -12,7 +12,7 @@ struct BrickLocation
 class Map
 {
 public:
-	Map(){ }
+	Map() { }
 	//friend class Tank;
 	void DrawBrick();
 	//将每个砖头放置到vector中

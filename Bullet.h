@@ -15,7 +15,7 @@ private:
 	int b_state;//-1表示消失
 public:
 	Bullet() {}
-	void init(int x,int y,Dir dir,int state);
+	void init(int x, int y, Dir dir, int state);
 	void Move();
 	int getState() const { return b_state; }
 	void Display();
