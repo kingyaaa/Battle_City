@@ -17,6 +17,7 @@ public:
 		m_x2 = 0;
 		m_y = 0;
 	}
+	void color(int x);
 	//获取四个顶点的位置信息
 	int getVertexOne_x();
 	int getVertexOne_y();
@@ -29,6 +30,7 @@ public:
 	void Shoot(vector<Bullet*>& listBullet, int& x, int& y);
 	virtual void DrawTankBody();
 	virtual void ClearTankBody();
+	void Boom();
 	//void setState(int re_state) { state = re_state; }
 	//virtual void Disappear();
 	//在Move函数改变方向后就无限移动
@@ -39,6 +41,7 @@ public:
 	bool WillKnockWall();
 	bool WillKnockBullet();
 	void gotoxy(int x, int y);
+	~Tank() {}
 protected:
 	//可以画出一个矩阵
 	int m_x1;

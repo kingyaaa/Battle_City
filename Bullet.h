@@ -1,4 +1,4 @@
-ï»¿#pragma once
+#pragma once
 #include"Map.h"
 #include<Windows.h>
 #include<iostream>
@@ -8,11 +8,11 @@ enum Dir { UP, DOWN, LEFT, RIGHT };
 class Bullet
 {
 private:
-	//è®°å½•åæ ‡,ç§»åŠ¨çš„æ–¹å‘
+	//¼ÇÂ¼×ø±ê,ÒÆ¶¯µÄ·½Ïò
 	int b_x, b_y;
 	int flag;
 	Dir b_dir;
-	int b_state;//-1è¡¨ç¤ºæ¶ˆå¤±,0æ˜¯æˆ‘æ–¹å­å¼¹ï¼Œ1æ˜¯ä½ æ–¹å­å¼¹
+	int b_state;//-1±íÊ¾ÏûÊ§,0ÊÇÎÒ·½×Óµ¯£¬1ÊÇÄã·½×Óµ¯
 public:
 	Bullet() {}
 	void init(int x, int y, Dir dir, int state);
@@ -27,5 +27,5 @@ public:
 	bool BulletCrash();
 	void setState(int re_state);
 	static vector<Bullet*>listBullet;
-	//static int BulletCrash;
+	~Bullet() { }
 };

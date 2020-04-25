@@ -50,10 +50,10 @@ void Bullet::Move()
 void Bullet::Display()
 {
 	//if (!Disappear()) {
-		gotoxy(b_x, b_y);
-		Map::MoveLocation[b_x][b_y] = 3;
-		Map::MoveLocation[b_x + 1][b_y] = 3;
-		cout << "●";
+	gotoxy(b_x, b_y);
+	Map::MoveLocation[b_x][b_y] = 3;
+	Map::MoveLocation[b_x + 1][b_y] = 3;
+	cout << "●";
 	//}
 }
 bool Bullet::BulletCrash()
@@ -125,6 +125,8 @@ bool Bullet::Disappear()
 		//砖也要消失,从砖的VECTOR中消除一个元素
 		if ((*pv).x == b_x && (*pv).y == b_y && !(*pv).UnAttacked)
 		{
+			if ((b_x == 40 && b_y == 36) || (b_x == 40 && b_y == 37))
+				Map::MoveLocation[b_x][b_y] = -1;
 			b_state = -1;
 			gotoxy(b_x, b_y);
 			cout << "  ";

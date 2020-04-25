@@ -2,6 +2,10 @@
 //静态成员变量需要再定义一次
 vector<BrickLocation>Map::BrickList;
 int Map::MoveLocation[80][40] = { 0 };
+void Map::color(int x)
+{
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), x);
+}
 void Map::DrawBrick()
 {
 	//绘制整个地图
@@ -39,6 +43,7 @@ void Map::DrawBrick()
 		gotoxy(i, 38);
 		cout << "▇";
 	}
+	color(7);
 	//cout << endl;
 	//绘制普通墙壁
 	for (int y = 4; y <= 12; ++y) {
@@ -207,6 +212,7 @@ void Map::DrawBrick()
 			cout << "〓";
 		}
 	}
+	color(15);
 	//绘制铁墙
 	for (int y = 7; y <= 8; ++y) {
 		for (int x = 38; x <= 42; x += 2) {
@@ -234,6 +240,7 @@ void Map::DrawBrick()
 		gotoxy(x, 18);
 		cout << "▇";
 	}*/
+	color(7);
 	for (int x = 36; x <= 44; x += 2) {
 		bl.x = x;
 		bl.y = 35;
@@ -256,8 +263,24 @@ void Map::DrawBrick()
 		gotoxy(44, y);
 		cout << "〓";
 	}
-	gotoxy(40, 37);
-	cout << "╬";//(40,37),(40,38);
+	//for(int x = )
+	color(7);
+	for (int x = 38; x <= 42; x += 2) {
+		bl.x = x;
+		bl.y = 37;
+		bl.UnAttacked = false;
+		BrickList.push_back(bl);
+		gotoxy(x, 37);
+		cout << "〓";
+	}
+	gotoxy(40, 36);
+	bl.x = 40;
+	bl.y = 36;
+	bl.UnAttacked = false;
+	BrickList.push_back(bl);
+	cout << "╬";
+	Map::MoveLocation[40][36] = 1;
+	Map::MoveLocation[40][37] = 1;
 	cout << endl;
 }
 void Map::gotoxy(int x, int y)

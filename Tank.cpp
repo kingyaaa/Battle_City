@@ -1,4 +1,8 @@
 #include "Tank.h"
+void Tank::color(int x)
+{
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), x);
+}
 void Tank::gotoxy(int x, int y)
 {
 	COORD pos;
@@ -123,6 +127,12 @@ void Tank::DrawTankBody()
 	//************************************/
 	//cout << endl;
 }
+void Tank::Boom()
+{
+	color(4);
+	Tank::DrawTankBody();
+	color(7);
+}
 void MainTank::DrawTankBody()
 {
 	for (int i = m_x1 - 2; i <= m_x1 + 2; i += 2) {
@@ -133,7 +143,9 @@ void MainTank::DrawTankBody()
 			Map::MoveLocation[i + 1][j] = 1;
 		}
 	}
+	color(11);
 	Tank::DrawTankBody();
+	color(7);
 }
 /******************************************
 坦克消失，原地清空坦克图形
@@ -269,6 +281,7 @@ void MainTank::Move(int& right, int& down, Dir last_dir)
 	switch (ch2) {
 		//进入发射子弹的函数部分
 			//TODO
+	case 'J':
 	case 'j': {
 		if (bullet.getState() == -1 || state == 1) {
 			int x = 0, y = 0;
@@ -277,7 +290,7 @@ void MainTank::Move(int& right, int& down, Dir last_dir)
 		}
 		break;
 	}
-			//向左75
+	case 'A'://向左75
 	case 'a': {
 		m_dir = Dir::LEFT;
 		if (m_dir != last_dir) {
@@ -296,7 +309,7 @@ void MainTank::Move(int& right, int& down, Dir last_dir)
 		}
 		break;
 	}
-			//向右77
+	case 'D'://向右77
 	case 'd': {
 		m_dir = Dir::RIGHT;
 		if (m_dir != last_dir) {
@@ -315,7 +328,7 @@ void MainTank::Move(int& right, int& down, Dir last_dir)
 		}
 		break;
 	}
-			//向上72
+	case 'W'://向上72
 	case 'w': {
 		m_dir = Dir::UP;
 		if (m_dir != last_dir) {
@@ -334,7 +347,7 @@ void MainTank::Move(int& right, int& down, Dir last_dir)
 		}
 		break;
 	}
-			//80向下
+	case 'S':	//80向下
 	case 's': {
 		m_dir = Dir::DOWN;
 		if (m_dir != last_dir) {
@@ -384,9 +397,13 @@ void EnemyTank::DrawTankBody()
 			Map::MoveLocation[i + 1][j] = 2;
 		}
 	}
+	if (getID() % 2 == 0)
+		color(15);
+	else
+		color(6);
 	Tank::DrawTankBody();
+	color(7);
 }
-
 /**********************************
 	敌军坦克移动
 *********************************/
