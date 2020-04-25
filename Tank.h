@@ -36,6 +36,7 @@ public:
 	virtual void Move(int& right, int& down, Dir dir) = 0;
 	//void setBrickLocation(vector<BrickLocation>&brick);
 	bool WillKnockWall();
+	bool WillKnockBullet();
 	void gotoxy(int x, int y);
 protected:
 	//可以画出一个矩阵
@@ -65,13 +66,15 @@ public:
 	void DrawTankBody();
 	void Shoot(vector<Bullet*>& listBullet, int& x, int& y);
 	void Move(int& right, int& down, Dir dir);
-	//void Disappear();
+	void Reset();
 };
 class EnemyTank :public Tank
 {
 public:
-	EnemyTank() :Tank()
-	{ }
+	EnemyTank(int my_ip) :Tank()
+	{
+		ip = my_ip;
+	}
 	~EnemyTank() {}
 	void Display(int& right, int& down, int& changeDir);
 	void initLocation(int x) {
@@ -89,12 +92,12 @@ public:
 	void DrawTankBody();
 	void Shoot(vector<Bullet*>& listBullet, int& x, int& y);
 	void Move(int& right, int& down, Dir dir);
-	//bool WillKnockTank();
-	bool WillKnockBullet();
-	//void Disappear();
+	int getID() const { return ip; }
+	//bool WillKnockBullet();
 private:
 	int cur_dir;
 	//限定10步换一个方向
 	int limStep;
 	int changeDir;
+	int ip;
 };

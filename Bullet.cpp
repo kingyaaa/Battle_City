@@ -52,7 +52,6 @@ void Bullet::Display()
 		Map::MoveLocation[b_x][b_y] = 3;
 		Map::MoveLocation[b_x + 1][b_y] = 3;
 		cout << "●";
-		gotoxy(0, 0);
 	}
 }
 /****************************************
@@ -80,8 +79,15 @@ bool Bullet::Disappear()
 	if (Map::MoveLocation[b_x][b_y] == 1 && b_state == 1)
 	{
 		b_state = -1;
+		Map::MoveLocation[b_x][b_y] = -1;
 		return true;
 		//坦克检测到被子弹打中,调用爆炸和ClearBody函数;
+	}
+	//敌方子弹(1)打敌方坦克（1）
+	if (Map::MoveLocation[b_x][b_y] == 2 && b_state == 1)
+	{
+		b_state = -1;
+		return true;
 	}
 	vector<BrickLocation>::iterator pv;
 	for (pv = Map::BrickList.begin(); pv != Map::BrickList.end();) {

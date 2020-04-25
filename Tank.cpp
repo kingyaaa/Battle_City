@@ -143,6 +143,16 @@ void MainTank::DrawTankBody()
 //{
 //	ClearTankBody();
 //}
+bool Tank::WillKnockBullet()
+{
+	for (int i = m_x1 - 2; i <= m_x1 + 2; i += 2) {
+		for (int j = m_y - 1; j <= m_y + 1; j++) {
+			if (Map::MoveLocation[i][j] == -1)
+				return true;
+		}
+	}
+	return false;
+}
 void Tank::ClearTankBody()
 {
 	for (int i = m_x1 - 2; i <= m_x1 + 2; i += 2) {
@@ -348,7 +358,15 @@ void MainTank::Move(int& right, int& down, Dir last_dir)
 	}
 	//DrawTankBody();
 }
-
+void MainTank::Reset()
+{
+	m_x1 = 30;
+	m_x2 = 31;
+	m_y = 36;
+	m_dir = Dir::UP;
+	state = 1;
+	DrawTankBody();
+}
 void EnemyTank::Shoot(vector<Bullet*>& listBullet, int& x, int& y)
 {
 	Tank::Shoot(Bullet::listBullet, x, y);
@@ -381,7 +399,6 @@ void EnemyTank::Display(int& right, int& down, int& changeDir)
 	//Sleep(500);
 	//Move(right, down,m_dir);
 	DrawTankBody();
-	//while (1) {
 	ClearTankBody();
 	tmp1 = m_x1, tmp2 = m_y;
 	//需要得知当前的移动方向
@@ -404,7 +421,6 @@ void EnemyTank::Display(int& right, int& down, int& changeDir)
 		Move(right, down, m_dir);
 	}
 	DrawTankBody();
-	//}
 	if (bullet.getState() == -1 || state == 1) {
 		int x = 0, y = 0;
 		state = 1;
@@ -414,11 +430,9 @@ void EnemyTank::Display(int& right, int& down, int& changeDir)
 
 void EnemyTank::Move(int& right, int& down, Dir last_dir)
 {
-	//ClearTankBody();
-	//产生移动方向的随机数
 	srand((int)time(0));
 	cur_dir = random(1, 9);
-	srand((int)time(0));
+	//srand((int)time(0));
 	limStep = random(12, 15);
 	changeDir = 1;
 	switch (cur_dir) {
@@ -493,14 +507,4 @@ void EnemyTank::Move(int& right, int& down, Dir last_dir)
 	*/
 	default:break;
 	}
-}
-bool EnemyTank::WillKnockBullet()
-{
-	for (int i = m_x1 - 2; i <= m_x1 + 2; i += 2) {
-		for (int j = m_y - 1; j <= m_y + 1; j++) {
-			if (Map::MoveLocation[i][j] == -1)
-				return true;
-		}
-	}
-	return false;
 }
