@@ -11,8 +11,8 @@ void GameStart();
 int main()
 {
 	getchar();
-	hide();
 	GameStart();
+	return 0;
 }
 void hide()
 {
@@ -21,17 +21,18 @@ void hide()
 }
 void GameStart()
 {
+	hide();
 	//绘制地图
 	Map map;
 	map.DrawBrick();
 	//敌军的坦克集合
 	vector<EnemyTank*>enemyTanks;
 	enemyTanks.clear();
-	for (int i = 0; i <= 2; i++) {
+	for (int i = 0; i <= 1; i++) {
 		enemyTanks.push_back(new EnemyTank(i + 1));
 	}
 	int count = 0;
-	int num = 0, enemyIP = 0, intervalTime = 0,leftTank = 0;
+	int num = 0, enemyIP = 0, intervalTime = 1,leftTank = 0;
 	//先出动了两只
 	for (vector<EnemyTank*>::iterator it = enemyTanks.begin(); it != enemyTanks.end(); ++it)
 	{
@@ -48,14 +49,11 @@ void GameStart()
 		count++;
 	}
 	MainTank mainTank;
-	int mainHP = 2, score = 0;
-	//ToDo
-	int right1 = 0, down1 = 1, changeDir1 = 0;
-	int right2 = 0, down2 = 1, changeDir2 = 0;
+	int mainHP = 200, score = 0;
 	int times = 0;
 	while (1) {
 		//检测场上剩余坦克数量,产生新坦克的时间间隔是3秒
-		/*if (leftTank < 4 && intervalTime % 150 == 0){
+		if (leftTank < 4 && intervalTime % 100 == 0) {
 			enemyTanks.push_back(new EnemyTank(num + 1));
 			num++;
 			leftTank++;
@@ -64,40 +62,90 @@ void GameStart()
 				(*pv)->initLocation(4);
 			else
 				(*pv)->initLocation(76);
-		}*/
+		}
 		//绘制主战坦克身体
 		mainTank.DrawTankBody();
 		//通过方向键实时控制坦克的移动
 		if (_kbhit()) {
 			mainTank.Display();
 		}
-		//敌军坦克移动,根据重型坦克和装甲车的速度不同，调用坦克的时间间隔不同，
-		//生命值不同，则坦克击毙敌人后的得分不同
-		for (vector<EnemyTank*>::iterator it = enemyTanks.begin(); it != enemyTanks.end();)
-		{
-			//每160ms跑一次重型坦克(奇数序号坦克)
-			if (times % 7 == 0 && (*it)->getID() % 2 == 1) {
-				(*it)->DrawTankBody();
-				(*it)->Display(right1, down1, changeDir1);
-				//right1 = 0; down1 = 1; changeDir1 = 0;
-			}
-			//每80ms跑一次装甲车（偶数序号坦克）
-			if (times % 4 == 0 && (*it)->getID() % 2 == 0) {
-				(*it)->DrawTankBody();
-				(*it)->Display(right2, down2, changeDir2);
-			}
-			++it;
-		}	
-		//每10ms跑一遍子弹的集合
+		//每5ms跑一遍子弹的集合
 		//子弹消失，在vector中删除这个元素;
+		int flag = 0;
 		for (vector<Bullet*>::iterator it = Bullet::listBullet.begin(); it != Bullet::listBullet.end();)
 		{
 			(*it)->Move();
+			//检测是否有子弹要来相撞
+			for (vector<Bullet*>::iterator pv = it + 1; pv != Bullet::listBullet.end(); ) {
+				//子弹与子弹是否方向相对,且相邻;
+				if ((*it)->getBullet_dir() == Dir::UP && (*pv)->getBullet_dir() == Dir::DOWN && (((*it)->getBullet_y() == (*pv)->getBullet_y() - 1 && (*pv)->getBullet_x() == (*it)->getBullet_x()) || ((*it)->getBullet_y() == (*pv)->getBullet_y() && (*pv)->getBullet_x() == (*it)->getBullet_x()))) 
+				{	
+					flag = 1;
+					(*pv)->setState(-1);
+					pv = Bullet::listBullet.erase(pv);
+					break;
+				}
+				if ((*it)->getBullet_dir() == Dir::DOWN && (*pv)->getBullet_dir() == Dir::UP && (((*it)->getBullet_y() == (*pv)->getBullet_y() + 1 && (*pv)->getBullet_x() == (*it)->getBullet_x()) || ((*it)->getBullet_y() == (*pv)->getBullet_y() && (*pv)->getBullet_x() == (*it)->getBullet_x()))) 
+				{
+					flag = 1;
+					(*pv)->setState(-1);
+					pv = Bullet::listBullet.erase(pv);
+					break;
+				}
+				if ((*it)->getBullet_dir() == Dir::RIGHT && (*pv)->getBullet_dir() == Dir::LEFT && (((*it)->getBullet_x() == (*pv)->getBullet_x() - 2 && (*it)->getBullet_y() == (*pv)->getBullet_y()) || ((*it)->getBullet_y() == (*pv)->getBullet_y() && (*pv)->getBullet_x() == (*it)->getBullet_x()))) 
+				{
+					flag = 1;
+					//++pv;
+					(*pv)->setState(-1);
+					pv = Bullet::listBullet.erase(pv);
+					break;
+				}
+				if ((*it)->getBullet_dir() == Dir::LEFT && (*pv)->getBullet_dir() == Dir::RIGHT && (((*it)->getBullet_x() == (*pv)->getBullet_x() + 2 && (*it)->getBullet_y() == (*pv)->getBullet_y()) || ((*it)->getBullet_y() == (*pv)->getBullet_y() && (*pv)->getBullet_x() == (*it)->getBullet_x()))) 
+				{
+					flag = 1;
+					//++pv;
+					(*pv)->setState(-1);
+					pv = Bullet::listBullet.erase(pv);
+					break;
+				}
+				++pv;
+			}
+			if (flag) {
+				(*it)->setState(-1);
+				it = Bullet::listBullet.erase(it);
+				flag = 0;
+				continue;
+			}
 			if ((*it)->Disappear()) {
 				it = Bullet::listBullet.erase(it);
 				continue;
 			}
 			(*it)->Display();
+			++it;
+		}
+		//实时检测是否有子弹爆炸
+		/*for (vector<Bullet*>::iterator it = Bullet::listBullet.begin(); it != Bullet::listBullet.end();)
+		{
+			if ((*it)->Disappear()) {
+				it = Bullet::listBullet.erase(it);
+				continue;
+			}
+			++it;
+		}*/
+		//敌军坦克移动,根据重型坦克和装甲车的速度不同，调用坦克的时间间隔不同，
+		//生命值不同，则坦克击毙敌人后的得分不同
+		for (vector<EnemyTank*>::iterator it = enemyTanks.begin(); it != enemyTanks.end();)
+		{
+			//每80ms跑一次重型坦克(奇数序号坦克)
+			if (times % 16 == 0 && (*it)->getID() % 2 == 1) {
+				(*it)->DrawTankBody();
+				(*it)->Display();
+			}
+			//每50ms跑一次装甲车（偶数序号坦克）
+			if (times % 10 == 0 && (*it)->getID() % 2 == 0) {
+				(*it)->DrawTankBody();
+				(*it)->Display();
+			}
 			++it;
 		}
 		//实时检测是否有坦克被炸
@@ -122,36 +170,9 @@ void GameStart()
 			if (mainHP < 0)
 				break;
 		}
-		//}
-			/**********************
-			while (pv != cour.myCourse.end()) {
-			if ((*pv).couID == dropIDorName)
-				pv = cour.myCourse.erase(pv);
-			else
-				++pv;
-		}
-			***********************/
-		Sleep(15);
+		Sleep(5);
 		times++;
 		intervalTime++;
 	}
+	return;
 }
-/*************************
-随机刷出坦克
-	/*for (int i = 0; i < 3; ++i) {
-		//enemy[i].randomLocation();
-		//将随机产生的矩阵与现有的各矩阵数据进行位置检测
-		int j = 0;
-		while(j < i){
-			if (pow(enemy[i].getCenterX() - enemy[j].getCenterX(), 2) + pow(enemy[i].getCenterY() - enemy[j].getCenterY(), 2) <= 9)
-			{
-				j = 0;
-				enemy[i].initLocation();
-			}
-			else
-				j++;
-		}
-		enemy[i].DrawTankBody();
-		//enemy[i].Display();
-	}
-******************************/

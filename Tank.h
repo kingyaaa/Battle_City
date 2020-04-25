@@ -29,11 +29,12 @@ public:
 	void Shoot(vector<Bullet*>& listBullet, int& x, int& y);
 	virtual void DrawTankBody();
 	virtual void ClearTankBody();
+	//void setState(int re_state) { state = re_state; }
 	//virtual void Disappear();
 	//在Move函数改变方向后就无限移动
 	//virtual void Display() = 0;
 	//改变方向
-	virtual void Move(int& right, int& down, Dir dir) = 0;
+	//virtual void Move(int& right, int& down, Dir dir) = 0;
 	//void setBrickLocation(vector<BrickLocation>&brick);
 	bool WillKnockWall();
 	bool WillKnockBullet();
@@ -76,7 +77,7 @@ public:
 		ip = my_ip;
 	}
 	~EnemyTank() {}
-	void Display(int& right, int& down, int& changeDir);
+	void Display();
 	void initLocation(int x) {
 		srand((int)time(0));
 		limStep = random(12, 15);
@@ -86,12 +87,15 @@ public:
 		m_y = 2;
 		m_dir = Dir::DOWN;
 		state = 1;
+		right = 0;
+		down = 1;
+		changeDir = 0;
 	}
 	int getCenterX() const { return m_x1; }
 	int getCenterY() const { return m_y; }
 	void DrawTankBody();
 	void Shoot(vector<Bullet*>& listBullet, int& x, int& y);
-	void Move(int& right, int& down, Dir dir);
+	void Move(Dir dir);
 	int getID() const { return ip; }
 	//bool WillKnockBullet();
 private:
@@ -100,4 +104,6 @@ private:
 	int limStep;
 	int changeDir;
 	int ip;
+	int right;
+	int down;
 };

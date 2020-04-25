@@ -390,7 +390,7 @@ void EnemyTank::DrawTankBody()
 /**********************************
 	敌军坦克移动
 *********************************/
-void EnemyTank::Display(int& right, int& down, int& changeDir)
+void EnemyTank::Display()
 {
 	int tmp1, tmp2;
 	//ClearTankBody();
@@ -405,7 +405,7 @@ void EnemyTank::Display(int& right, int& down, int& changeDir)
 	//10步一转
 	if (limStep == 0) {
 		//这里要求转方向
-		Move(right, down, m_dir);
+		Move(m_dir);
 	}
 	if (!changeDir) {
 		m_x1 += right;
@@ -418,7 +418,7 @@ void EnemyTank::Display(int& right, int& down, int& changeDir)
 		m_x1 = tmp1;
 		m_y = tmp2;
 		//主战坦克和敌军坦克的不同点在于，主战坦克在可能撞墙时无法移动，手动转移方向，敌军坦克在可能撞墙时需要自动改变方向
-		Move(right, down, m_dir);
+		Move(m_dir);
 	}
 	DrawTankBody();
 	if (bullet.getState() == -1 || state == 1) {
@@ -428,7 +428,7 @@ void EnemyTank::Display(int& right, int& down, int& changeDir)
 	}
 }
 
-void EnemyTank::Move(int& right, int& down, Dir last_dir)
+void EnemyTank::Move(Dir last_dir)
 {
 	srand((int)time(0));
 	cur_dir = random(1, 9);

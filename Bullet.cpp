@@ -1,5 +1,6 @@
 #include "Bullet.h"
 vector<Bullet*>Bullet::listBullet;
+//int Bullet::BulletCrash = 0;
 /***************************
 构造函数
 参数值：坦克枪口的坐标
@@ -22,6 +23,7 @@ void Bullet::Move()
 {
 	//while (1) {
 	gotoxy(b_x, b_y);
+	//解决敌军打敌军时头被打掉的bug
 	if (flag == 0) {
 		cout << "  ";
 		//原动态坐标属性归0，表示是空地了
@@ -47,26 +49,49 @@ void Bullet::Move()
 }
 void Bullet::Display()
 {
-	if (!Disappear()) {
+	//if (!Disappear()) {
 		gotoxy(b_x, b_y);
 		Map::MoveLocation[b_x][b_y] = 3;
 		Map::MoveLocation[b_x + 1][b_y] = 3;
 		cout << "●";
+	//}
+}
+bool Bullet::BulletCrash()
+{
+	if (Map::MoveLocation[b_x][b_y] == 3)
+	{
+		Map::MoveLocation[b_x][b_y] = 0;
+		b_state = -1;
+		return true;
 	}
+	return false;
+}
+void Bullet::setState(int re_state)
+{
+	b_state = re_state;
+	gotoxy(b_x, b_y);
+	cout << "  ";
 }
 /****************************************
 检测子弹是否会撞上墙壁或者坦克
 碰撞检测
 返回值为 1 时：子弹撞上东西，需要消失,同时被撞上的物体需要做出相应的反应
 ******************************************/
+
 bool Bullet::Disappear()
 {
 	//子弹打到子弹
-	if (Map::MoveLocation[b_x][b_y] == 3)
+	//if (Map::MoveLocation[b_x][b_y] == -1)
+	//{
+	//	b_state = -1;
+	//	return true;
+	//}
+	/*if (Map::MoveLocation[b_x][b_y] == 3)
 	{
+		Map::MoveLocation[b_x][b_y] = 0;
 		b_state = -1;
 		return true;
-	}
+	}*/
 	//我方子弹(0)打到敌方坦克(2)
 	if (Map::MoveLocation[b_x][b_y] == 2 && b_state == 0)
 	{
