@@ -1,7 +1,15 @@
 #include "Map.h"
 //静态成员变量需要再定义一次
 vector<BrickLocation>Map::BrickList;
-int Map::MoveLocation[80][40] = { 0 };
+int Map::MoveLocation[80][40];
+Map::Map() {
+	for (int i = 0; i < 80; i++)
+	{
+		for (int j = 0; j < 40; j++) {
+			MoveLocation[i][j] = 0;
+		}
+	}
+}
 void Map::color(int x)
 {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), x);

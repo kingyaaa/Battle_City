@@ -7,10 +7,24 @@
 #include<cmath>
 #include<list>
 using namespace std;
-void hide();//隐藏光标
-void BulletDetect();
-void GameStart();
-void CreateEnemy(vector<EnemyTank*>& enemyTanks);
-void EnemyDetect(vector<EnemyTank*>& enemyTanks);
-void Destory();
-void GameOver();
+class Game {
+private:
+	int score;
+	int times;
+	int num;
+	int intervalTime;
+	int leftTank;
+	int sum;
+	int mainHP;
+	int result;
+	Map map;
+public:
+	Game();
+	void hide();//隐藏光标
+	void BulletDetect();
+	void GameStart();
+	void CreateEnemy(vector<EnemyTank*>& enemyTanks);
+	void EnemyDetect(vector<EnemyTank*>& enemyTanks);
+	void GameOver();
+	~Game() { }
+};
